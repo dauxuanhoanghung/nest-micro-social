@@ -10,7 +10,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: ['amqp://admin:password@localhost:5672'],
-      queue: 'user_service_queue',
+      queue: 'api_gateway_queue',
       queueOptions: {
         durable: false,
       },
