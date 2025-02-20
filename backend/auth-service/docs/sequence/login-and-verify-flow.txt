@@ -1,0 +1,61 @@
+title Login and Verification Flow with 3 Options
+
+actor Customer
+boundary Auth-Service
+entity Account
+entity VerificationToken
+boundary Notification-Service
+database Database
+
+== Login ==
+Customer->Auth-Service: Login (email, password)
+Auth-Service->Database: Check account status
+Auth-Service<--Database: Account exists, unverified
+Auth-Service->Customer: Prompt to verify account with options
+
+== Initial Verification Attempt ==
+Auth-Service->VerificationToken: Generate new token
+Auth-Service->Database: Store new token, mark old tokens invalid
+Auth-Service<--Database: Confirmation of token update
+
+alt Email Hyperlink {Main Option}
+  Auth-Service->Notification-Service: Send verification email (email, token)
+  Notification-Service-->Customer: Email with verification link
+  Customer->Auth-Service: Click verification link (token)
+  Auth-Service->Database: Verify token and update account status
+  Auth-Service<--Database: Account verified
+  Customer<--Auth-Service: Verification successful
+else Email OTP
+  Auth-Service->Notification-Service: Send OTP via email (email, token)
+  Notification-Service-->Customer: Email with OTP
+  Customer->Auth-Service: Submit OTP (token)
+  Auth-Service->Database: Verify OTP and update account status
+  Auth-Service<--Database: Account verified
+  Customer<--Auth-Service: Verification successful
+else SMS OTP
+  Auth-Service->Notification-Service: Send OTP via SMS (phone, token)
+  Notification-Service-->Customer: SMS with OTP
+  Customer->Auth-Service: Submit OTP (token)
+  Auth-Service->Database: Verify OTP and update account status
+  Auth-Service<--Database: Account verified
+  Customer<--Auth-Service: Verification successful
+end
+
+== Resend Option ==
+note right: Customer didn’t receive email/SMS or token expired
+Customer->Auth-Service: Request resend verification (select option)
+Auth-Service->VerificationToken: Generate new token (disable old tokens)
+Auth-Service->Database: Update with new token, mark old tokens invalid
+Auth-Service<--Database: Confirmation of token update
+
+alt Resend via Email Hyperlink
+  Auth-Service->Notification-Service: Send verification email (email, new token)
+  Notification-Service-->Customer: Email with verification link
+else Resend via Email OTP
+  Auth-Service->Notification-Service: Send OTP via email (email, new token)
+  Notification-Service-->Customer: Email with OTP
+else Resend via SMS OTP
+  Auth-Service->Notification-Service: Send OTP via SMS (phone, new token)
+  Notification-Service-->Customer: SMS with OTP
+end
+Customer<--Auth-Service: Check email/SMS for new verification

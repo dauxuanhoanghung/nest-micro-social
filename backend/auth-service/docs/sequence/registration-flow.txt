@@ -1,0 +1,24 @@
+title Registration Flow with Verification
+
+actor Customer
+boundary Auth-Service
+entity Account
+entity VerificationToken
+boundary Notification-Service
+database Database
+
+Customer->Auth-Service: Request to register new account (email, password)
+Auth-Service->Database: Check if email exists
+Auth-Service<--Database: Response (email exists or not)
+
+alt Email does not exist
+  Auth-Service->Account: Create new account (email, password)
+  Auth-Service->VerificationToken: Generate verification token
+  Auth-Service->Database: Store account and token
+  Auth-Service<--Database: Confirmation of storage
+  Auth-Service->Notification-Service: Send verification email (email, token)
+  Notification-Service-->Customer: Email with verification link
+  Customer<--Auth-Service: Registration initiated, check email
+else Email already exists
+  Customer<--Auth-Service: Error: Email already in use
+end

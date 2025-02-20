@@ -1,0 +1,18 @@
+title Simplified Logout Flow
+
+actor Customer
+boundary Auth-Service
+entity RefreshToken
+database Database
+database Redis
+
+== Logout ==
+Customer->Auth-Service: Request logout
+Auth-Service->Database: Retrieve account and refresh token
+Auth-Service<--Database: Account and refresh token details
+Auth-Service->RefreshToken: Set isRevoked: true
+Auth-Service->Database: Update refresh token (isRevoked: true)
+Auth-Service<--Database: Confirmation of update
+Auth-Service->Redis: Add revoked token to blacklist
+Auth-Service<--Redis: Confirmation of addition
+Customer<--Auth-Service: Logout successful

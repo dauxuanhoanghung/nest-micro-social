@@ -1,0 +1,21 @@
+title Logout All Devices Flow
+
+actor Customer
+boundary Auth-Service
+entity Account
+entity RefreshToken
+database Database
+database Redis
+
+== Logout All Devices ==
+Customer->Auth-Service: Request logout from all devices
+Auth-Service->Database: Retrieve account and all refresh tokens
+Auth-Service<--Database: Account and list of refresh tokens
+loop For each refresh token
+  Auth-Service->RefreshToken: Set isRevoked: true
+  Auth-Service->Database: Update refresh token (isRevoked: true)
+  Auth-Service<--Database: Confirmation of update
+  Auth-Service->Redis: Add revoked token to blacklist
+  Auth-Service<--Redis: Confirmation of addition
+end
+Customer<--Auth-Service: Logout from all devices successful
