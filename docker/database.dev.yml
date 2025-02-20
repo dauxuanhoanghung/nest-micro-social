@@ -1,0 +1,14 @@
+services:
+  postgresql:
+    image: postgres:9.6-alpine
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=app
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    networks:
+      - monitoring_network
