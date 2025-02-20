@@ -1,22 +1,13 @@
-import { Controller, Get, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { AppService } from './app.service';
+import { Controller, Get } from '@nestjs/common';
+import { ApiResponse } from './common/types/api-response';
 
 @Controller()
 export class AppController {
-  constructor(
-    private readonly appService: AppService,
-    @Inject('USER_SERVICE') private userClient: ClientProxy,
-  ) {}
-
-  @Get('/hi')
-  async getHello(): Promise<string> {
-    const response = await firstValueFrom(
-      this.userClient.send<unknown>('ack-auth-user', 'Hello from Auth Service'),
-    );
-    this.userClient.emit('emit-auth-user', 'Hello from Auth Service');
-    console.log('Response from user service:', response);
-    return this.appService.getHello();
+  @Get()
+  getHello(): ApiResponse {
+    return {
+      status: 200,
+      data: 'Hello World from Auth Service',
+    };
   }
 }
