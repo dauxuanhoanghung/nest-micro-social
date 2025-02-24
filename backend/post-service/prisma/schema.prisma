@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String?
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+  privacy     Privacy   @relation(fields: [privacyId], references: [id])
+  privacyId   Int       @map("privacy_id")
+  media       Media[]
+  tags        Tag[]     @relation("PostTags")
+  userId      String    @map("user_id")
+
+  @@map("posts")
+}
+
+model Media {
+  id        Int       @id @default(autoincrement())
+  url       String
+  type      MediaType
+  post      Post?     @relation(fields: [postId], references: [id])
+  postId    Int?      @map("post_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  userId    String    @map("user_id")
+
+  @@map("media")
+}
+
+model Tag {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  posts     Post[]    @relation("PostTags")
+  createdAt DateTime  @default(now()) @map("created_at")
+  userId    String    @map("user_id")
+
+  @@map("tags")
+}
+
+model Privacy {
+  id        Int        @id @default(autoincrement())
+  level     PrivacyLevel
+  posts     Post[]
+  createdAt DateTime   @default(now()) @map("created_at")
+  userId    String     @map("user_id")
+
+  @@map("privacies")
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+}
+
+enum PrivacyLevel {
+  PUBLIC
+  FRIENDS
+  PRIVATE
+}
