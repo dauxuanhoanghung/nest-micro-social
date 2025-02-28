@@ -8,6 +8,16 @@ install:
 		cd backend/$$service && yarn install --frozen-lockfile && cd -; \
 	done
 
+installwin:
+	@for %%s in ($(SERVICES)) do ( \
+		if exist backend\%%s ( \
+			echo Installing dependencies for %%s... && \
+			pushd backend\%%s && yarn install --frozen-lockfile && popd \
+		) else ( \
+			echo Directory backend\%%s does not exist! \
+		) \
+	)
+
 start:
 	@for service in $(SERVICES); do \
 		echo "Starting $$service..."; \

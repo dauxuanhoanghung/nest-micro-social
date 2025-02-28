@@ -108,3 +108,9 @@ Each of these services would typically:
 - Include monitoring and logging
 
 Would you like me to dive deeper into any particular service's implementation details or explain how specific features work together?
+
+Install package 
+- make installwin
+
+Run docker compose 
+- docker compose -f ./docker/infras.yml up 
