@@ -1,0 +1,24 @@
+{
+  "name": "nest-micro-social",
+  "version": "1.0.0",
+  "description": "NestJS Micro Social Media",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"yarn api\" \"yarn auth\" \"yarn post\" \"yarn user\" --names \"API-GATEWAY,AUTH,POST,USER\" --prefix-colors \"blue,green,yellow,magenta\" --kill-others",
+    "api": "cd backend/api-gateway && yarn start:dev",
+    "auth": "cd backend/auth-service && yarn start:dev",
+    "post": "cd backend/post-service && yarn start:dev",
+    "user": "cd backend/user-service && yarn start:dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20",
+    "yarn": ">=1.22",
+    "npm": "please-use-yarn-instead"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
