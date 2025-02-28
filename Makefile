@@ -1,7 +1,6 @@
 # Define service directories
 SERVICES = api-gateway auth-service post-service user-service
 
-# Default to using Yarn, but you can switch to npm if needed
 install:
 	@for service in $(SERVICES); do \
 		echo "Installing dependencies for $$service..."; \
@@ -19,17 +18,16 @@ installwin:
 	)
 
 start:
-	@for service in $(SERVICES); do \
-		echo "Starting $$service..."; \
-		cd backend/$$service && yarn start:dev & \
-		cd -; \
-	done
-	@wait
+	@echo "Setting up concurrently..."
+	@yarn
+	@echo "Starting all services using concurrently..."
+	@npx concurrently \
+		"cd backend/api-gateway && yarn start:dev" \
+		"cd backend/auth-service && yarn start:dev" \
+		"cd backend/post-service && yarn start:dev" \
+		"cd backend/user-service && yarn start:dev" \
+		--names "API-GATEWAY,AUTH,POST,USER" \
+		--prefix-colors "blue,green,yellow,magenta" \
+		--kill-others
 
-stop:
-	@echo "Stopping all services..."
-	@pkill -f "node" || true
-
-restart: stop install start
-
-.PHONY: install start stop restart
+.PHONY: install installwin start
