@@ -58,7 +58,7 @@ import { VerificationModule } from './modules/verification/verification.module';
     AuthModule,
     AccountModule,
     LogActionModule,
-    LoggerModule,
+    LoggerModule.forRoot(),
     PasswordManagementModule,
     RefreshTokenModule,
     RegistrationModule,

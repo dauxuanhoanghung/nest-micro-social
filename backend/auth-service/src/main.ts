@@ -2,13 +2,14 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
+import { Logger } from '@nestjs/common';
 import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { BadRequestExceptionFilter } from './common/filters/bad-request-exception.filter';
 import { EntityNotFoundExceptionFilter } from './common/filters/entity-not-found-exception.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { swaggerConfig } from './config/swagger.config';
-import { AppLogger } from './modules/logger/app-logger.service';
+import { LoggerService } from './modules/logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,9 +24,8 @@ async function bootstrap() {
     new HttpExceptionFilter(),
   );
 
-  const logger = await app.resolve(AppLogger);
-  logger.setContext('Bootstrap');
-  app.useLogger(logger);
+  const logger = await app.resolve(LoggerService);
+  Logger.overrideLogger(logger);
 
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
