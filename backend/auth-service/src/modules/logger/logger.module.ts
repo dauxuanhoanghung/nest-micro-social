@@ -61,18 +61,18 @@ export class LoggerModule {
             transports.push(new ConsoleTransport());
           }
 
-          if (mergedOptions.files) {
-            Object.values(mergedOptions.files).forEach((fileConfig) => {
-              transports.push(
-                new FileTransport({
-                  filename: fileConfig.filename,
-                  maxSize: fileConfig.maxSize,
-                  maxFiles: fileConfig.maxFiles,
-                  level: fileConfig.level,
-                }),
-              );
-            });
-          }
+          // if (mergedOptions.files) {
+          //   Object.values(mergedOptions.files).forEach((fileConfig) => {
+          //     transports.push(
+          //       new FileTransport({
+          //         filename: fileConfig.filename,
+          //         maxSize: fileConfig.maxSize,
+          //         maxFiles: fileConfig.maxFiles,
+          //         level: fileConfig.level,
+          //       }),
+          //     );
+          //   });
+          // }
 
           return { transports };
         },
@@ -103,12 +103,12 @@ export class LoggerModule {
         provide: LOGGER_TOKEN,
         useFactory: () => ({
           transports: [
-            new FileTransport({
-              filename,
-              maxSize: options.maxSize || '20m',
-              maxFiles: options.maxFiles || '14d',
-              level: options.level || 'info', // Default level
-            }),
+            // new FileTransport({
+            //   filename,
+            //   maxSize: options.maxSize || '20m',
+            //   maxFiles: options.maxFiles || '14d',
+            //   level: options.level || 'info', // Default level
+            // }),
           ],
         }),
       },

@@ -75,4 +75,8 @@ export class AuthController {
   async logoutAllDevices() {
     return await this.authService.logoutAllDevices();
   }
+
+  // async introspect() {
+  //   return await this.authService.introspect();
+  // }
 }
